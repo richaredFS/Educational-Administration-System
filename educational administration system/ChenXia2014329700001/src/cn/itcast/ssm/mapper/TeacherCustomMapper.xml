@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.ssm.mapper.TeacherCustomMapper" >
+
+ <select id="selectTeacherByUsername" resultType="cn.itcast.ssm.po.TeacherCustom" parameterType="java.lang.String">
+    SELECT 
+	 teacher.*
+	FROM teacher
+	WHERE
+	 teacher.username=#{username,jdbcType=VARCHAR};
+  </select>
+  
+   <select id="selectUsername" resultType="java.lang.String">
+    SELECT 
+	 teacher.username
+	FROM teacher;
+  </select>
+  <select id="selectAllTeachers" resultType="cn.itcast.ssm.po.TeacherCustom">
+    SELECT 
+	 teacher.*
+	FROM teacher;
+  </select>
+    <insert id="insertCourse" parameterType="cn.itcast.ssm.po.VO">
+    INSERT INTO
+	cour_tea(tea_tno,cour_cno)
+	VALUES
+	(#{cour_Tea.tno,jdbcType=VARCHAR},#{cour_Tea.cno,jdbcType=VARCHAR}); 
+   </insert>
+   
+   <resultMap type="cn.itcast.ssm.po.TeacherCustom" id="queryCourse1">
+	            <id column="tno" property="tno" jdbcType="VARCHAR" />
+			    <result column="tname" property="tname" jdbcType="VARCHAR" />
+			    <result column="tdept" property="tdept" jdbcType="VARCHAR" />
+			    <result column="tage" property="tage" jdbcType="INTEGER" />
+			    <result column="username" property="username" jdbcType="VARCHAR" />
+			    <result column="password" property="password" jdbcType="VARCHAR" />
+			    
+		 <collection property="courseCustoms" ofType="cn.itcast.ssm.po.CourseCustom">
+			 	<id column="cno" property="cno"/>
+			 	<result column="cname" property="cname"/>
+			 	<result column="cgrade" property="cgrade"/>
+			 	<result column="chour" property="chour"/>
+			 	<result column="ctime" property="ctime"/>			 	
+	     </collection>
+	</resultMap>
+	
+   <select id="queryCourse" parameterType="java.lang.String" resultMap="queryCourse1">
+   SELECT   
+   teacher.*,course.*
+	FROM
+	teacher,course,cour_tea
+	WHERE
+	 teacher.`tno`=cour_tea.`tea_tno`
+	AND course.`cno`=cour_tea.`cour_cno`
+	AND teacher.`username`=#{username,jdbcType=VARCHAR};
+   </select>
+   <update id="updateScore" parameterType="VO">
+     UPDATE score
+    SET 
+    score.`score`=#{studentCustom.score}
+    WHERE
+    score.`cour_cno`=#{courseCustom.cno}
+    AND 
+    score.`stu_sno`=#{studentCustom.sno};
+   </update>
+</mapper>

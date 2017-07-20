@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.ssm.mapper.CourseCustomMapper" >
+	<resultMap type="cn.itcast.ssm.po.CourseCustom" id="selectCourses1">
+			 	<id column="cno" property="cno"/>
+			 	<result column="cname" property="cname"/>
+			 	<result column="cgrade" property="cgrade"/>
+			 	<result column="chour" property="chour"/>
+			 	<result column="ctime" property="ctime"/>	 	
+			 	<association property="teacher" javaType="cn.itcast.ssm.po.Teacher">
+			 	    <id column="tno" property="tno" jdbcType="VARCHAR" />
+				    <result column="tname" property="tname" jdbcType="VARCHAR" />
+				    <result column="tdept" property="tdept" jdbcType="VARCHAR" />
+				    <result column="tage" property="tage" jdbcType="INTEGER" />
+				    <result column="username" property="username" jdbcType="VARCHAR" />
+				    <result column="password" property="password" jdbcType="VARCHAR" />
+			 	</association>
+	</resultMap>
+		<resultMap type="cn.itcast.ssm.po.CourseCustom" id="selectCourses2">
+			 	<id column="cno" property="cno"/>
+			 	<result column="cname" property="cname"/>
+			 	<result column="cgrade" property="cgrade"/>
+			 	<result column="chour" property="chour"/>
+			 	<result column="ctime" property="ctime"/>	 	
+			 	<collection property="teacher" ofType="cn.itcast.ssm.po.Teacher">
+			 	    <id column="tno" property="tno" jdbcType="VARCHAR" />
+				    <result column="tname" property="tname" jdbcType="VARCHAR" />
+				    <result column="tdept" property="tdept" jdbcType="VARCHAR" />
+				    <result column="tage" property="tage" jdbcType="INTEGER" />
+				    <result column="username" property="username" jdbcType="VARCHAR" />
+				    <result column="password" property="password" jdbcType="VARCHAR" />
+			 	</collection>
+	</resultMap>
+	
+   <select id="selectCourses" resultType="cn.itcast.ssm.po.CourseCustom">
+     SELECT 
+	   course.*,teacher.*
+	 FROM course,teacher,cour_tea
+	 WHERE 
+	   teacher.`tno`=cour_tea.`tea_tno`
+	   AND cour_tea.`cour_cno`=course.`cno`;
+    </select>
+    <select id="selectPureCourses" resultMap="selectCourses2">
+     SELECT 
+      course.*,teacher.*,cour_tea.*
+    FROM course,teacher,cour_tea
+    WHERE 
+	 course.`cno`=cour_tea.`cour_cno`
+	 AND cour_tea.`tea_tno`=teacher.`tno`;
+    </select>
+    <select id="selectTeacherCourses" resultType="cn.itcast.ssm.po.CoursesTeacher">
+     SELECT 
+      course.*,teacher.*,cour_tea.*
+     FROM course,teacher,cour_tea
+     WHERE 
+	 course.`cno`=cour_tea.`cour_cno`
+	 AND cour_tea.`tea_tno`=teacher.`tno`;
+    </select>
+     <select id="selectAllCourses" resultType="cn.itcast.ssm.po.CourseCustom">
+     SELECT 
+      course.*
+      FROM course;
+    </select>
+    <select id="selectCoursesByTeacher" resultType="cn.itcast.ssm.po.CourseCustom" parameterType="java.lang.String">
+       SELECT 
+		course.*
+	   FROM
+		course,teacher,cour_tea
+	   WHERE 
+		teacher.`tno`=cour_tea.`tea_tno`
+		AND course.`cno`=cour_tea.`cour_cno`
+		AND teacher.`tno`=#{tno,jdbcType=VARCHAR};
+    </select>
+    
+    
+    <insert id="insertCourse" parameterType="cn.itcast.ssm.po.Stu_Cour">
+     INSERT INTO stu_cour (cour_cno,stu_sno,tea_tno) 
+    VALUES(#{cour_cno,jdbcType=VARCHAR}, #{stu_sno,jdbcType=VARCHAR},#{tea_tno,jdbcType=VARCHAR}); 
+    </insert>
+    <insert id="insertScore" parameterType="cn.itcast.ssm.po.Stu_Cour">
+     INSERT INTO score (stu_sno,cour_cno) 
+    VALUES( #{stu_sno,jdbcType=VARCHAR},#{cour_cno,jdbcType=VARCHAR}) ;
+    </insert>
+    
+    <delete id="deleteCourse" parameterType="cn.itcast.ssm.po.Stu_Cour">
+     DELETE FROM stu_cour WHERE cour_cno=#{cour_cno} AND stu_sno=#{stu_sno};
+    </delete>
+    <delete id="deleteScore" parameterType="cn.itcast.ssm.po.Stu_Cour">
+     DELETE FROM score WHERE cour_cno=#{cour_cno} AND stu_sno=#{stu_sno};
+    </delete>
+    
+    <update id="updateCourse" parameterType="cn.itcast.ssm.po.StudentCustom">
+     UPDATE stu_cour
+     SET 
+      stu_cour.stu_sno =#{newUsername,jdbcType=VARCHAR}
+      where 
+      stu_cour.stu_sno= #{username,jdbcType=VARCHAR} ;
+    </update>
+    
+
+    <delete id="deleteCourseByTeacher" parameterType="cn.itcast.ssm.po.VO">
+    DELETE FROM 
+	 cour_tea
+	WHERE
+	 cour_tea.`tea_tno`=#{cour_Tea.tno,jdbcType=VARCHAR}
+	AND  cour_tea.`cour_cno`=#{cour_Tea.cno,jdbcType=VARCHAR};
+    </delete>
+    
+    <resultMap type="cn.itcast.ssm.po.CourseCustom" id="queryStudentInfo">
+			 	<id column="cno" property="cno"/>
+			 	<result column="cname" property="cname"/>
+			 	<result column="cgrade" property="cgrade"/>
+			 	<result column="chour" property="chour"/>
+			 	<result column="ctime" property="ctime"/>	 	
+			 	<collection property="studentCustoms" ofType="cn.itcast.ssm.po.StudentCustom">
+			 	   <id column="sno" property="sno" jdbcType="VARCHAR" />
+				    <result column="sname" property="sname" jdbcType="VARCHAR" />
+				    <result column="ssex" property="ssex" jdbcType="INTEGER" />
+				    <result column="sdept" property="sdept" jdbcType="VARCHAR" />
+				    <result column="sclass" property="sclass" jdbcType="VARCHAR" />
+				    <result column="sage" property="sage" jdbcType="INTEGER" />
+				    <result column="username" property="username" jdbcType="VARCHAR" />
+				    <result column="password" property="password" jdbcType="VARCHAR" />
+				    <result column="score" property="score" jdbcType="INTEGER" />
+			 	</collection>
+	</resultMap>
+	
+    <select id="queryStudentInfo" resultMap="queryStudentInfo" parameterType="VO">
+	SELECT 
+	student.*,course.*,score.`score`
+	FROM
+	student,course,stu_cour,score
+	WHERE
+	course.`cno`=#{courseCustom.cno,jdbcType=VARCHAR} 
+	AND stu_cour.`tea_tno`=#{teacherCustom.tno,jdbcType=VARCHAR}
+	AND  course.`cno`=stu_cour.`cour_cno` 
+	AND student.`sno`=stu_cour.`stu_sno`
+	AND score.`cour_cno`=course.`cno`
+	AND score.`stu_sno`=student.`sno`;
+    </select>
+</mapper> 

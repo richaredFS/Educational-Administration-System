@@ -1,0 +1,62 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>2014329700001</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+<style type="text/css">
+	body{background-color:#bfedd2;}
+</style>
+  </head>
+
+  <body>
+<h2>所有课程（2014329700001陈霞制作）</h2>
+<form action="${pageContext.request.contextPath}/Student/chooseCourses.action">
+  <table width="100%" border=1>
+	  <tr>
+	    <td>加入该课程</td>
+		<td>课程编号</td>
+		<td>课程</td>
+		<td>课程学分</td>
+		<td>课程学时</td>
+		<td>课程时间</td>
+		<td>老师编号</td>
+		<td>老师姓名</td>
+		<td>老师年龄</td>
+		<td>老师所在学院</td>
+	  </tr>  
+	  <c:forEach items="${coursesTeachers}" var="item" varStatus="status">    
+		  <tr>	
+		    <td><input type="checkbox" name="stu_Cours[${status.index}].cour_cno" value="${item.cno}" /></td>
+			<td>${item.cno}</td>
+			<td>${item.cname}</td>
+			<td>${item.cgrade}</td>
+			<td>${item.chour}</td>
+			<td>${item.ctime}</td>
+			<td>${item.tno}
+			<input type="hidden" name="stu_Cours[${status.index}].tea_tno" value="${item.tno}" />
+			<input type="hidden" name="stu_Cours[${status.index}].stu_sno" value="${stu.sno}" /></td>
+			<td>${item.tname}</td>
+			<td>${item.tage}</td>
+			<td>${item.tdept}</td>
+	 	  </tr>
+ 	  </c:forEach>  
+	</table>
+	<br/><br/>
+	<input type="submit" value="提交"/>
+</form>
+ </body>
+</html>
